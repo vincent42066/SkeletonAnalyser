@@ -1,0 +1,1 @@
+  -LC:/Users/RMS/Documents/SkeletonAnalyser/NuitrackSDK/Examples/nuitrack_ni_gl_sample/../../Nuitrack/lib/win64  -lglut32 -lglu32 -lopengl32 -lnuitrack "C:/Program Files/OpenNI/Lib64/openNI64.lib" -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32 
