@@ -5,6 +5,15 @@
 #include <iostream>
 
 using namespace tdv::nuitrack;
+using namespace std;
+
+
+void print(std::vector<float> const &input)
+{
+	for (int i = 0; i < input.size(); i++) {
+		std::cout << input.at(i) << ' ';
+	}
+}
 
 NuitrackGLSample::NuitrackGLSample() :
 	_textureID(0),
@@ -378,6 +387,7 @@ void NuitrackGLSample::drawBone(const Joint& j1, const Joint& j2)
 void NuitrackGLSample::drawSkeleton(const std::vector<Joint>& joints)
 {
 	// We need to draw a bone for every pair of neighbour joints
+	print(_lines);
 	drawBone(joints[JOINT_HEAD], joints[JOINT_NECK]);
 	drawBone(joints[JOINT_NECK], joints[JOINT_LEFT_COLLAR]);
 	drawBone(joints[JOINT_LEFT_COLLAR], joints[JOINT_TORSO]);
@@ -436,25 +446,78 @@ int NuitrackGLSample::power2(int n)
 // Visualize bones, joints and hand positions
 void NuitrackGLSample::renderLines()
 {
+	std::vector<GLfloat> _tempLines;
+	std::vector<GLfloat> _tempLines2;
 	if (_lines.empty())
 		return;
+	//print(_lines.data());
+	//cout << lines.data();
+	std::cout << "END\n"; 
 	
-	glEnableClientState(GL_VERTEX_ARRAY);
+	// glEnableClientState(GL_VERTEX_ARRAY);
 	
-	glColor4f(1, 1, 1, 1);
+	// glColor4f(1, 0, 1, 1); //  red, green, and blue and alpha
 	
-	glLineWidth(6);
+	// glLineWidth(6);
 	
-	glVertexPointer(2, GL_FLOAT, 0, _lines.data());
-	glDrawArrays(GL_LINES, 0, _lines.size() / 2);
+	// glVertexPointer(2, GL_FLOAT, 0, _lines.data());
+	// glDrawArrays(GL_LINES, 0, _lines.size() / 2);
 	
-	glLineWidth(1);
+	// glLineWidth(1); // change la taille des lignes du squelette
+
+// ------------ Cette partie contrôle la couleur des lignes ------------------//
+	for (int i = 0; i < _lines.size(); i+=4) {
+		_tempLines2.push_back(_lines.at(i));
+		_tempLines2.push_back(_lines.at(i+1));
+		_tempLines2.push_back(_lines.at(i+2));
+		_tempLines2.push_back(_lines.at(i+3));
+		glEnableClientState(GL_VERTEX_ARRAY);
+		if(i > 10){
+			glColor4f(1, 0, 0, 1); //added
+		}
+		else{
+			glColor4f(0, 1, 0, 1); //added
+		}
+		
+		glLineWidth(6); // change la taille des joints
+
+		glVertexPointer(2, GL_FLOAT, 0, _tempLines2.data());
+		glDrawArrays(GL_LINES, 0, _tempLines2.size() / 2);
+		_tempLines2.clear();
+
+	}
+// -------------------------------------------------------------------------//
+
+
+
+
+// ------------ Cette partie contrôle la couleur des points ------------------//
+	for (int i = 0; i < _lines.size(); i+=2) {
+		_tempLines.push_back(_lines.at(i));
+		_tempLines.push_back(_lines.at(i+1));
+		glEnable(GL_POINT_SMOOTH);
+		if(i > 10){
+			glColor4f(1, 0, 0, 1); //added
+		}
+		else{
+			glColor4f(0, 1, 0, 1); //added
+		}
+		
+		glPointSize(150); // change la taille des joints
+
+		glVertexPointer(2, GL_FLOAT, 0, _tempLines.data());
+		glDrawArrays(GL_POINTS, 0, _tempLines.size() / 2);
+		_tempLines.clear();
+
+	}
+// -------------------------------------------------------------------------//
 	
-	glEnable(GL_POINT_SMOOTH);
-	glPointSize(16);
-	
-	glVertexPointer(2, GL_FLOAT, 0, _lines.data());
-	glDrawArrays(GL_POINTS, 0, _lines.size() / 2);
+	// glEnable(GL_POINT_SMOOTH);
+	// glColor4f(1, 1, 1, 1); //added
+	// glPointSize(200); // change la taille des joints
+
+	// glVertexPointer(2, GL_FLOAT, 0, _lines.data());
+	// glDrawArrays(GL_POINTS, 0, _lines.size() / 2);
 	
 	if (!_leftHandPointers.empty())
 	{
