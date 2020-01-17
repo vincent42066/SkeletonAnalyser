@@ -18,8 +18,8 @@
 
 typedef enum
 {
-	DEPTH_SEGMENT_MODE = 0,
-	RGB_MODE = 1,
+	DEPTH_SEGMENT_MODE = 0, // mode avec les segment et le fond en carte de profondeur
+	RGB_MODE = 1, // mode camera RGB
 	MODES_MAX_COUNT
 } ViewMode;
 

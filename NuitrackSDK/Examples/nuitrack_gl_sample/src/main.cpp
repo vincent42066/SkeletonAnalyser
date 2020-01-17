@@ -82,8 +82,8 @@ int main(int argc, char* argv[])
 	// Initialize GLUT window
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE | GLUT_DEPTH);
-	glutInitWindowSize(outputMode.xres, outputMode.yres);
-	glutCreateWindow("Nuitrack GL Sample (Nuitrack API)");
+	glutInitWindowSize(outputMode.yres, outputMode.xres);
+	glutCreateWindow("Mirion Skeleton Analyser");
 	//glutSetCursor(GLUT_CURSOR_NONE);
 
 	// Connect GLUT callbacks
