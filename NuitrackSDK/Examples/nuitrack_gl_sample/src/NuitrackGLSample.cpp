@@ -3,6 +3,7 @@
 #include <cstdlib>
 #include <cstring>
 #include <iostream>
+#include <math.h>
 
 using namespace tdv::nuitrack;
 using namespace std;
@@ -386,8 +387,19 @@ void NuitrackGLSample::drawBone(const Joint& j1, const Joint& j2)
 	{
 		_lines.push_back(_width * j1.proj.x);
 		_lines.push_back(_height * j1.proj.y);
+		_lines.push_back(j1.proj.z);
 		_lines.push_back(_width * j2.proj.x);
 		_lines.push_back(_height * j2.proj.y);
+		_lines.push_back(j2.proj.z);
+
+	}
+	else{ // on retourne des 0 pour savoir les parties du squelette qui ne sont pas détectées
+		_lines.push_back(0.0);
+		_lines.push_back(0.0);
+		_lines.push_back(0.0);
+		_lines.push_back(0.0);
+		_lines.push_back(0.0);
+		_lines.push_back(0.0);
 	}
 }
 
@@ -459,8 +471,6 @@ void NuitrackGLSample::renderLines()
 	if (_lines.empty())
 		return;
 	//print(_lines.data());
-	//cout << lines.data();
-	std::cout << "END\n"; 
 	
 	// glEnableClientState(GL_VERTEX_ARRAY);
 	
@@ -474,17 +484,20 @@ void NuitrackGLSample::renderLines()
 	// glLineWidth(1); // change la taille des lignes du squelette
 
 // ------------ Cette partie contrôle la couleur des lignes ------------------//
-	for (int i = 0; i < _lines.size(); i+=4) {
+	for (int i = 0; i < _lines.size(); i+=6) {
+
 		_tempLines2.push_back(_lines.at(i));
 		_tempLines2.push_back(_lines.at(i+1));
-		_tempLines2.push_back(_lines.at(i+2));
+		// on saute le coordonné en z de j1
 		_tempLines2.push_back(_lines.at(i+3));
+		_tempLines2.push_back(_lines.at(i+4));
+		// on saute le coordonné en z de j2
 		glEnableClientState(GL_VERTEX_ARRAY);
-		if(i > 10){
+		if(_isContaminated[i] == 1 && _isContaminated[i+3] == 1){
 			glColor4f(1, 0, 0, 1); //added
 		}
 		else{
-			glColor4f(0, 1, 0, 1); //added
+			glColor4f(1, 1, 1, 1); //added
 		}
 		
 		glLineWidth(6); // change la taille des joints
@@ -500,15 +513,44 @@ void NuitrackGLSample::renderLines()
 
 
 // ------------ Cette partie contrôle la couleur des points ------------------//
-	for (int i = 0; i < _lines.size(); i+=2) {
+	for (int i = 0; i < _lines.size(); i+=3) {
+		float x, y, z, xr_hand, yr_hand, zr_hand, xl_hand, yl_hand, zl_hand;
+		float distance;
+
+		x =  _lines.at(i);
+		y =  _lines.at(i + 1);
+		z =  _lines.at(i + 2);
+
+		xr_hand = _lines.at(81);
+		yr_hand = _lines.at(82);
+		zr_hand = _lines.at(83);
+
+		xl_hand = _lines.at(63);
+		yl_hand = _lines.at(64);
+		zl_hand = _lines.at(65);
+
 		_tempLines.push_back(_lines.at(i));
 		_tempLines.push_back(_lines.at(i+1));
 		glEnable(GL_POINT_SMOOTH);
-		if(i > 10){
+
+		distance = getDistanceJoints(x, y, z, xr_hand, yr_hand, zr_hand); // distance entre main droite et un autre point
+
+		if(distance < 40.0 && (i < 66 || i > 81 && _lines.at(i) != 0)){
+			_isContaminated[i] = 1; 
+		}
+
+		distance = getDistanceJoints(x, y, z, xl_hand, yl_hand, zl_hand); // distance entre main gauche et un autre point
+		if(distance < 40.0 && i > 65 && i < 82 && _lines.at(i) != 0){
+			_isContaminated[i] = 1; 
+		}
+
+		if(_isContaminated[i] == 1){
+			cout << "La distance entre la main gauche et la main droite est : \n" << endl;
+			cout << distance << endl;
 			glColor4f(1, 0, 0, 1); //added
 		}
 		else{
-			glColor4f(0, 1, 0, 1); //added
+			glColor4f(1, 1, 0, 0); //added
 		}
 		
 		glPointSize(150); // change la taille des joints
