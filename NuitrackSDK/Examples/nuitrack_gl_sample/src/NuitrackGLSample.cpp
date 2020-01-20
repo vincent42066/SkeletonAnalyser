@@ -15,6 +15,14 @@ void print(std::vector<float> const &input)
 	}
 }
 
+float getDistanceJoints(float x_j1, float y_j1, float z_j1, float x_j2, float y_j2, float z_j2)
+{
+	float distance;
+	distance = sqrt(pow(x_j1 - x_j2, 2) + pow(y_j1 - y_j2, 2) /*+ pow(z_j1 - z_j2, 2)*/);
+
+	return distance;
+}
+
 NuitrackGLSample::NuitrackGLSample() :
 	_textureID(0),
 	_textureBuffer(0),

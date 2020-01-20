@@ -62,6 +62,7 @@ private:
 	GLfloat _textureCoords[8];
 	GLfloat _vertexes[8];
 	std::vector<GLfloat> _lines;
+    bool _isContaminated[108]{};
 	std::vector<GLfloat> _leftHandPointers;
 	std::vector<GLfloat> _rightHandPointers;
 	std::vector<tdv::nuitrack::Gesture> _userGestures;
