@@ -6,3 +6,9 @@ NuitrackSDK/Nuitrack/
 .vscode/
 
 NuitrackSDK/Examples/nuitrack_gl_sample/build/*
+
+probe_scanner/Debug/
+
+probe_scanner/Drivers/
+
+probe_scanner/Release/
